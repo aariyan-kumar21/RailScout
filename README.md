@@ -23,8 +23,3 @@ See [TECH_STACK.md](./TECH_STACK.md).
 - [SCHEMA.md](./SCHEMA.md) — API request/response shapes
 - [TECH_STACK.md](./TECH_STACK.md) — stack and reasoning
 
-## Status
-🚧 In development — portfolio project.
-
-## Setup
-_(to be filled in once backend/extension are scaffolded)_
