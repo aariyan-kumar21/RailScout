@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailScout</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo-group">
+        <span class="logo-icon">🚆</span>
+        <div>
+          <h1 class="logo-title">RailScout</h1>
+          <p class="logo-subtitle">Find confirmed intermediate seats</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Search Form -->
+    <form id="searchForm" class="search-form">
+      <div class="form-group">
+        <label for="trainNumber">Train Number</label>
+        <input 
+          type="text" 
+          id="trainNumber" 
+          name="trainNumber" 
+          placeholder="e.g. 12952" 
+          maxlength="5"
+          required 
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="boardingStation">Boarding Station</label>
+          <input 
+            type="text" 
+            id="boardingStation" 
+            name="boardingStation" 
+            placeholder="e.g. KOTA" 
+            maxlength="5"
+            required 
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-group">
+          <label for="destination">Destination</label>
+          <input 
+            type="text" 
+            id="destination" 
+            name="destination" 
+            placeholder="e.g. MMCT" 
+            maxlength="5"
+            required 
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="date">Journey Date</label>
+          <input 
+            type="date" 
+            id="date" 
+            name="date" 
+            required 
+          />
+        </div>
+        <div class="form-group">
+          <label for="classCode">Class</label>
+          <select id="classCode" name="classCode">
+            <option value="3A" selected>3A (3rd AC)</option>
+            <option value="2A">2A (2nd AC)</option>
+            <option value="1A">1A (1st AC)</option>
+            <option value="SL">SL (Sleeper)</option>
+            <option value="CC">CC (AC Chair)</option>
+            <option value="2S">2S (2nd Sitting)</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn" class="submit-btn">
+        <span class="btn-text">Find Confirmed Station</span>
+        <span class="btn-spinner hidden"></span>
+      </button>
+    </form>
+
+    <!-- Error Banner -->
+    <div id="errorBanner" class="error-banner hidden">
+      <span class="error-icon">⚠️</span>
+      <span id="errorMessage" class="error-message"></span>
+    </div>
+
+    <!-- Results Section -->
+    <section id="resultsSection" class="results-section hidden">
+      <div class="results-header">
+        <div id="trainSummary" class="train-summary"></div>
+        <div class="results-count" id="resultsCount"></div>
+      </div>
+      <div id="resultsList" class="results-list"></div>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

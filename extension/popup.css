@@ -1,0 +1,372 @@
+/* popup.css — RailScout Chrome Extension Styling */
+
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: #1e293b;
+  --border-color: #334155;
+  
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+
+  --accent-blue: #38bdf8;
+  --accent-blue-hover: #0284c7;
+
+  /* Status Badge Colors */
+  --confirmed-bg: #064e3b;
+  --confirmed-text: #34d399;
+  --confirmed-border: #059669;
+
+  --rac-bg: #451a03;
+  --rac-text: #fbbf24;
+  --rac-border: #d97706;
+
+  --waitlist-bg: #450a0a;
+  --waitlist-text: #f87171;
+  --waitlist-border: #dc2626;
+
+  --unknown-bg: #27272a;
+  --unknown-text: #a1a1aa;
+  --unknown-border: #52525b;
+
+  --irctc-orange: #f97316;
+  --irctc-orange-hover: #ea580c;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  width: 400px;
+  min-height: 480px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* Custom Scrollbar */
+body::-webkit-scrollbar {
+  width: 6px;
+}
+body::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+body::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Header */
+.app-header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  font-size: 24px;
+  background: rgba(56, 189, 248, 0.1);
+  padding: 6px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+.logo-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Form */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--bg-secondary);
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-group label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+}
+
+.form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Submit Button */
+.submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  background: var(--accent-blue);
+  color: #032b43;
+  font-size: 13px;
+  font-weight: 700;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+  background: var(--accent-blue-hover);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #032b43;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error Banner */
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--waitlist-bg);
+  border: 1px solid var(--waitlist-border);
+  color: var(--waitlist-text);
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.error-icon {
+  font-size: 14px;
+}
+
+/* Results Section */
+.results-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.train-summary {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.results-count {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Station Card */
+.station-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: transform 0.1s ease, border-color 0.15s ease;
+}
+
+.station-card.is-confirmed {
+  border-color: var(--confirmed-border);
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.2) 0%, var(--bg-secondary) 100%);
+}
+
+.station-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.station-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.station-code-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.station-code {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.station-name {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.station-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Status Badge */
+.status-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.badge-confirmed {
+  background-color: var(--confirmed-bg);
+  color: var(--confirmed-text);
+  border: 1px solid var(--confirmed-border);
+}
+
+.badge-rac {
+  background-color: var(--rac-bg);
+  color: var(--rac-text);
+  border: 1px solid var(--rac-border);
+}
+
+.badge-waitlist {
+  background-color: var(--waitlist-bg);
+  color: var(--waitlist-text);
+  border: 1px solid var(--waitlist-border);
+}
+
+.badge-unknown {
+  background-color: var(--unknown-bg);
+  color: var(--unknown-text);
+  border: 1px solid var(--unknown-border);
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.07);
+}
+
+.irctc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--irctc-orange);
+  background: rgba(249, 115, 22, 0.1);
+  border: 1px solid rgba(249, 115, 22, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.irctc-btn:hover {
+  background: var(--irctc-orange);
+  color: #ffffff;
+}
+
+/* Utilities */
+.hidden {
+  display: none !important;
+}

@@ -67,8 +67,16 @@ curl "http://localhost:3000/api/find-confirmed?trainNumber=12952"
 # → { "success": false, "error": { "code": "INVALID_PARAMS", ... } }
 ```
 
-### Extension
-> Not yet built — coming in the next phase.
+### Extension (Chrome)
+
+1. Open Google Chrome and navigate to `chrome://extensions`
+2. Enable **Developer mode** (toggle switch in the top right corner)
+3. Click **Load unpacked** (top left button)
+4. Select the `extension/` folder inside this repository:
+   ```text
+   c:\Users\Aariy\RailScout\extension
+   ```
+5. Click the RailScout icon in the Chrome toolbar to open the popup.
 
 ---
 
@@ -84,10 +92,15 @@ RailScout/
 │   │   ├── railRadar.js        ← Axios wrapper for RailRadar API
 │   │   └── cache.js            ← In-memory 5-min TTL cache
 │   ├── utils/
-│   │   └── parseAvailability.js ← Converts raw status → { isConfirmed, type }
+│   │   └── parseAvailability.js ← Extracts availability from RailRadar calendar
 │   ├── .env.example
 │   └── package.json
-├── extension/                  ← (coming next)
+├── extension/
+│   ├── manifest.json           ← Manifest V3 extension configuration
+│   ├── popup.html              ← Extension popup markup and form
+│   ├── popup.css               ← Extension popup styles and status badges
+│   ├── popup.js                ← API fetch handler and UI renderer
+│   └── icons/                  ← Extension icons
 ├── PRD.md
 ├── SCHEMA.md
 ├── TECH_STACK.md
