@@ -1,0 +1,10 @@
+# Dependencies
+node_modules/
+
+# Environment — contains the real API key; never commit this
+.env
+
+# Runtime / OS noise
+*.log
+.DS_Store
+Thumbs.db
