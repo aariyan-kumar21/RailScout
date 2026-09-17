@@ -47,19 +47,21 @@ function parseAvailability(availabilityResponse, journeyDate) {
   const calendar = availabilityResponse?.data?.calendar;
 
   if (!Array.isArray(calendar) || calendar.length === 0) {
-    const error = new Error('No calendar data available in RailRadar response');
-    error.code = 'NO_CALENDAR_DATA';
-    throw error;
+    return {
+      availabilityStatus: 'No forecast data — try a date within the next ~14 days',
+      isConfirmed: false,
+      availabilityType: 'UNKNOWN',
+    };
   }
 
   const entry = calendar.find((item) => item.date === journeyDate);
 
   if (!entry) {
-    const error = new Error(
-      `Journey date ${journeyDate} is outside RailRadar's available forecast range`
-    );
-    error.code = 'DATE_OUT_OF_RANGE';
-    throw error;
+    return {
+      availabilityStatus: 'No forecast data — try a date within the next ~14 days',
+      isConfirmed: false,
+      availabilityType: 'UNKNOWN',
+    };
   }
 
   return {

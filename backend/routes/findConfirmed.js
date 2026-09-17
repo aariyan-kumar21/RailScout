@@ -248,16 +248,6 @@ router.get('/', async (req, res) => {
         ...parsed, // availabilityStatus, isConfirmed, availabilityType
       });
     } catch (parseError) {
-      if (parseError.code === 'DATE_OUT_OF_RANGE') {
-        return res.status(400).json({
-          success: false,
-          error: {
-            code: 'DATE_OUT_OF_RANGE',
-            message: `Date ${date} is outside the available forecast range`,
-          },
-        });
-      }
-
       console.error(
         `[warn] Could not parse availability for ${candidate.stationCode}: ${parseError.message}`
       );
