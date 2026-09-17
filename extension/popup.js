@@ -77,7 +77,15 @@ searchForm.addEventListener('submit', async (event) => {
   });
 
   try {
-    const response = await fetch(`${BACKEND_URL}?${params.toString()}`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+    const response = await fetch(`${BACKEND_URL}?${params.toString()}`, {
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+
     const data = await response.json();
 
     if (!response.ok || !data.success) {
@@ -88,9 +96,11 @@ searchForm.addEventListener('submit', async (event) => {
 
     renderResults(data);
   } catch (err) {
-    showError(
-      'Could not connect to the RailScout backend at http://localhost:3000. Make sure `npm run dev` is running.'
-    );
+    if (err.name === 'AbortError') {
+      showError('The request took too long. Please try again.');
+    } else {
+      showError("Can't reach the RailScout server. Make sure the backend is running (npm run dev) and try again.");
+    }
   } finally {
     setLoading(false);
   }

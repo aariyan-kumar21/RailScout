@@ -78,6 +78,10 @@ async function getTrainRoute(trainNumber, haltsOnly = true) {
     );
     return response.data;
   } catch (error) {
+    console.error(
+      `[RailRadar Error] getTrainRoute(${trainNumber}):`,
+      error.response?.data || error.message
+    );
     // Re-throw with a tagged message so the route handler can classify it
     throw enrichAxiosError(error, `getTrainRoute(${trainNumber})`);
   }

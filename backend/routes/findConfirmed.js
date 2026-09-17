@@ -47,21 +47,33 @@ router.get('/', async (req, res) => {
     quotaCode = 'GN',
   } = req.query;
 
-  const missingParams = [];
-  if (!trainNumber)     missingParams.push('trainNumber');
-  if (!boardingStation) missingParams.push('boardingStation');
-  if (!destination)     missingParams.push('destination');
-  if (!date)            missingParams.push('date');
-  if (!classCode)       missingParams.push('classCode');
+  if (!trainNumber) {
+    return res.status(400).json({ success: false, error: { code: 'INVALID_PARAMS', message: 'Please enter a train number' } });
+  }
+  if (!boardingStation) {
+    return res.status(400).json({ success: false, error: { code: 'INVALID_PARAMS', message: 'Please enter a boarding station' } });
+  }
+  if (!destination) {
+    return res.status(400).json({ success: false, error: { code: 'INVALID_PARAMS', message: 'Please enter a destination' } });
+  }
+  if (!date) {
+    return res.status(400).json({ success: false, error: { code: 'INVALID_PARAMS', message: 'Please select a journey date' } });
+  }
+  if (!classCode) {
+    return res.status(400).json({ success: false, error: { code: 'INVALID_PARAMS', message: 'Please select a class' } });
+  }
 
-  if (missingParams.length > 0) {
-    return res.status(400).json({
-      success: false,
-      error: {
-        code: 'INVALID_PARAMS',
-        message: `Missing required parameter(s): ${missingParams.join(', ')}`,
-      },
-    });
+  if (isNaN(Date.parse(date))) {
+    return res.status(400).json({ success: false, error: { code: 'INVALID_DATE', message: 'Please enter a valid date' } });
+  }
+
+  const validClasses = ['1A', '2A', '3A', 'SL', 'CC', '2S'];
+  if (!validClasses.includes(classCode.toUpperCase())) {
+    return res.status(400).json({ success: false, error: { code: 'INVALID_CLASS', message: 'Please select a valid class' } });
+  }
+
+  if (boardingStation.toUpperCase() === destination.toUpperCase()) {
+    return res.status(400).json({ success: false, error: { code: 'SAME_STATIONS', message: "Boarding station and destination can't be the same" } });
   }
 
   // Normalise to upper-case so "kota" and "KOTA" both work
@@ -70,6 +82,17 @@ router.get('/', async (req, res) => {
   const normTrainNumber  = trainNumber.trim();
   const normClassCode    = classCode.toUpperCase();
   const normQuotaCode    = quotaCode.toUpperCase();
+
+  const trainNumberRegex = /^\d{4,5}$/;
+  if (!trainNumberRegex.test(normTrainNumber)) {
+    return res.status(404).json({
+      success: false,
+      error: {
+        code: 'TRAIN_NOT_FOUND',
+        message: 'Please enter a valid train number',
+      },
+    });
+  }
 
   // ── Step 2: Check the in-memory cache ────────────────────────────────────
   const cacheKey = cache.buildKey(
@@ -120,7 +143,7 @@ router.get('/', async (req, res) => {
       success: false,
       error: {
         code: 'TRAIN_NOT_FOUND',
-        message: `Train ${normTrainNumber} not found or has no route data`,
+        message: `Train ${normTrainNumber} not found. Please check the train number and try again.`,
       },
     });
   }
@@ -160,7 +183,7 @@ router.get('/', async (req, res) => {
       success: false,
       error: {
         code: 'STATION_NOT_ON_ROUTE',
-        message: `Boarding station ${normBoarding} is not on the route of train ${normTrainNumber}`,
+        message: `${normBoarding} is not a station on this train's route`,
       },
     });
   }
@@ -175,7 +198,19 @@ router.get('/', async (req, res) => {
       success: false,
       error: {
         code: 'STATION_NOT_ON_ROUTE',
-        message: `Destination station ${normDestination} is not on the route of train ${normTrainNumber}`,
+        message: `${normDestination} is not a station on this train's route`,
+      },
+    });
+  }
+
+  if (destinationIndex <= boardingIndex) {
+    const actualOrigin = stations[0].stationCode;
+    const actualDestination = stations[stations.length - 1].stationCode;
+    return res.status(422).json({
+      success: false,
+      error: {
+        code: 'WRONG_DIRECTION',
+        message: `This train travels from ${actualOrigin} to ${actualDestination} — please check your boarding and destination stations are in the right order`,
       },
     });
   }
@@ -263,6 +298,21 @@ router.get('/', async (req, res) => {
     }
   }
 
+  // ── Step 9b: Top-level check for dates outside forecast window ───────────
+  const allOutsideForecast = allResults.length > 0 && allResults.every(
+    (r) => r.availabilityStatus === 'No forecast data — try a date within the next ~14 days'
+  );
+
+  if (allOutsideForecast) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'DATE_OUT_OF_RANGE',
+        message: 'Live availability is only available for dates within the next ~14 days',
+      },
+    });
+  }
+
   // ── Step 10: Cache the full scan results, then respond ───────────────────
   cache.set(cacheKey, { trainName, results: allResults });
 
@@ -295,12 +345,12 @@ router.get('/', async (req, res) => {
 function handleUpstreamError(res, error, trainNumber) {
   const status = error.httpStatus || 500;
 
-  if (status === 404) {
+  if (status >= 400 && status < 500 && status !== 429) {
     return res.status(404).json({
       success: false,
       error: {
         code: 'TRAIN_NOT_FOUND',
-        message: `Train ${trainNumber} not found on RailRadar`,
+        message: `Train ${trainNumber} not found. Please check the train number and try again.`,
       },
     });
   }
@@ -310,7 +360,7 @@ function handleUpstreamError(res, error, trainNumber) {
       success: false,
       error: {
         code: 'RATE_LIMIT_EXCEEDED',
-        message: 'RailRadar API rate limit reached. Please try again later.',
+        message: "We've hit today's data limit for this demo. Please try again later.",
       },
     });
   }
@@ -319,7 +369,7 @@ function handleUpstreamError(res, error, trainNumber) {
     success: false,
     error: {
       code: 'UPSTREAM_API_ERROR',
-      message: `RailRadar API error: ${error.message}`,
+      message: "Couldn't fetch live data right now — RailRadar's service may be temporarily unavailable. Please try again in a moment.",
     },
   });
 }
