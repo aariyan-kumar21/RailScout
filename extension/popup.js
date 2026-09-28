@@ -146,7 +146,7 @@ function createStationCard(station) {
   const card = document.createElement('div');
   card.className = `station-card ${station.isConfirmed ? 'is-confirmed' : ''}`;
 
-  // Top section: Station info & status badge
+  // Top section: Station info & status badge + subtext
   const topRow = document.createElement('div');
   topRow.className = 'station-card-top';
 
@@ -177,13 +177,23 @@ function createStationCard(station) {
   infoDiv.appendChild(codeNameDiv);
   infoDiv.appendChild(metaDiv);
 
-  // Status Badge
+  // Status Group (Badge + Subtext)
+  const statusGroup = document.createElement('div');
+  statusGroup.className = 'status-group';
+
   const badge = document.createElement('span');
   badge.className = `status-badge ${getBadgeClass(station)}`;
-  badge.textContent = station.availabilityStatus || 'UNKNOWN';
+  badge.textContent = getBadgeText(station);
+
+  const subtext = document.createElement('span');
+  subtext.className = `status-subtext ${getSubtextClass(station)}`;
+  subtext.textContent = getAvailabilitySubtext(station);
+
+  statusGroup.appendChild(badge);
+  statusGroup.appendChild(subtext);
 
   topRow.appendChild(infoDiv);
-  topRow.appendChild(badge);
+  topRow.appendChild(statusGroup);
 
   // Bottom section: IRCTC manual search link (RULES.md §1)
   const actionsRow = document.createElement('div');
@@ -205,6 +215,24 @@ function createStationCard(station) {
 }
 
 /**
+ * Short badge text (AVAILABLE / WAITLIST / RAC / UNKNOWN)
+ * @param {Object} station
+ * @returns {string}
+ */
+function getBadgeText(station) {
+  if (station.isConfirmed) {
+    return 'AVAILABLE';
+  }
+  if (station.availabilityType === 'RAC' || (station.availabilityStatus && station.availabilityStatus.includes('RAC'))) {
+    return 'RAC';
+  }
+  if (station.availabilityType === 'WAITLIST' || (station.availabilityStatus && station.availabilityStatus.includes('WL'))) {
+    return 'WAITLIST';
+  }
+  return station.availabilityType && station.availabilityType !== 'UNKNOWN' ? station.availabilityType : 'UNKNOWN';
+}
+
+/**
  * Determine badge CSS class based on availability properties
  * @param {Object} station
  * @returns {string}
@@ -213,13 +241,70 @@ function getBadgeClass(station) {
   if (station.isConfirmed) {
     return 'badge-confirmed';
   }
-  if (station.availabilityType === 'RAC') {
+  if (station.availabilityType === 'RAC' || (station.availabilityStatus && station.availabilityStatus.includes('RAC'))) {
     return 'badge-rac';
   }
   if (station.availabilityType === 'WAITLIST' || (station.availabilityStatus && station.availabilityStatus.includes('WL'))) {
     return 'badge-waitlist';
   }
   return 'badge-unknown';
+}
+
+/**
+ * Determine subtext CSS class for styling
+ * @param {Object} station
+ * @returns {string}
+ */
+function getSubtextClass(station) {
+  if (station.isConfirmed) {
+    return 'subtext-confirmed';
+  }
+  if (station.availabilityType === 'RAC' || (station.availabilityStatus && station.availabilityStatus.includes('RAC'))) {
+    return 'subtext-rac';
+  }
+  if (station.availabilityType === 'WAITLIST' || (station.availabilityStatus && station.availabilityStatus.includes('WL'))) {
+    return 'subtext-waitlist';
+  }
+  return 'subtext-unknown';
+}
+
+/**
+ * Get readable subtext for candidate station availability
+ * @param {Object} station
+ * @returns {string}
+ */
+function getAvailabilitySubtext(station) {
+  if (station.isConfirmed) {
+    if (typeof station.availableSeats === 'number') {
+      return `${station.availableSeats} ${station.availableSeats === 1 ? 'seat' : 'seats'} available`;
+    }
+    return 'Seats available';
+  }
+
+  const isRac = station.availabilityType === 'RAC' || (station.availabilityStatus && station.availabilityStatus.includes('RAC'));
+  if (isRac) {
+    if (typeof station.waitlistNumber === 'number') {
+      return `RAC #${station.waitlistNumber}`;
+    }
+    const racMatch = station.availabilityStatus?.match(/\d+/);
+    if (racMatch) {
+      return `RAC #${parseInt(racMatch[0], 10)}`;
+    }
+    return 'RAC available';
+  }
+
+  const isWaitlist = station.availabilityType === 'WAITLIST' || (station.availabilityStatus && station.availabilityStatus.includes('WL'));
+  if (isWaitlist) {
+    if (typeof station.waitlistNumber === 'number') {
+      if (station.waitlistType) {
+        return `Waitlist #${station.waitlistNumber} (${station.waitlistType})`;
+      }
+      return `Waitlist #${station.waitlistNumber}`;
+    }
+    return station.availabilityStatus || 'Waitlist';
+  }
+
+  return station.availabilityStatus || 'No forecast data';
 }
 
 /**

@@ -31,7 +31,11 @@ No database is used in v1 — data flows: Extension → Backend → RailRadar AP
       "distanceFromOrigin": 489,
       "stopsBeforeBoarding": 3,
       "availabilityStatus": "AVAILABLE-0012",
-      "isConfirmed": true
+      "isConfirmed": true,
+      "availabilityType": "AVAILABLE",
+      "availableSeats": 12,
+      "waitlistNumber": null,
+      "waitlistType": null
     },
     {
       "stationCode": "KOTA",
@@ -39,7 +43,11 @@ No database is used in v1 — data flows: Extension → Backend → RailRadar AP
       "distanceFromOrigin": 712,
       "stopsBeforeBoarding": 0,
       "availabilityStatus": "GNWL24/WL11",
-      "isConfirmed": false
+      "isConfirmed": false,
+      "availabilityType": "WAITLIST",
+      "availableSeats": null,
+      "waitlistNumber": 11,
+      "waitlistType": "GNWL"
     }
   ]
 }

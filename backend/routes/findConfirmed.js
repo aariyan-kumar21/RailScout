@@ -268,6 +268,9 @@ router.get('/', async (req, res) => {
         availabilityStatus: 'UNKNOWN',
         isConfirmed:        false,
         availabilityType:   'UNKNOWN',
+        availableSeats:     null,
+        waitlistNumber:     null,
+        waitlistType:       null,
       });
       continue;
     }
@@ -280,7 +283,7 @@ router.get('/', async (req, res) => {
         stationName:        candidate.stationName,
         distanceFromOrigin: candidate.distanceFromOrigin,
         stopsBeforeBoarding,
-        ...parsed, // availabilityStatus, isConfirmed, availabilityType
+        ...parsed, // availabilityStatus, isConfirmed, availabilityType, availableSeats, waitlistNumber, waitlistType
       });
     } catch (parseError) {
       console.error(
@@ -294,6 +297,9 @@ router.get('/', async (req, res) => {
         availabilityStatus: 'UNKNOWN',
         isConfirmed:        false,
         availabilityType:   'UNKNOWN',
+        availableSeats:     null,
+        waitlistNumber:     null,
+        waitlistType:       null,
       });
     }
   }
