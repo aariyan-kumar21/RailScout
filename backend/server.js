@@ -18,6 +18,7 @@ const express = require('express');
 const cors    = require('cors');
 
 const findConfirmedRouter = require('./routes/findConfirmed');
+const findDatesRouter     = require('./routes/findDates');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -48,7 +49,10 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok', service: 'railscout-backend' });
 });
 
-// Primary endpoint — station availability scanner
+// Primary date-first availability endpoint
+app.use('/api/find-dates', findDatesRouter);
+
+// Secondary station availability scanner
 app.use('/api/find-confirmed', findConfirmedRouter);
 
 // 404 catch-all for any route not explicitly handled above
@@ -57,7 +61,7 @@ app.use((_req, res) => {
     success: false,
     error: {
       code: 'NOT_FOUND',
-      message: 'Endpoint not found. Available: GET /api/find-confirmed',
+      message: 'Endpoint not found. Available: GET /api/find-dates, GET /api/find-confirmed',
     },
   });
 });
@@ -85,6 +89,7 @@ app.use((err, _req, res, _next) => {
 
 app.listen(PORT, () => {
   console.log(`RailScout backend running on http://localhost:${PORT}`);
-  console.log(`  Health check : GET http://localhost:${PORT}/health`);
-  console.log(`  Main endpoint: GET http://localhost:${PORT}/api/find-confirmed`);
+  console.log(`  Health check  : GET http://localhost:${PORT}/health`);
+  console.log(`  Find dates    : GET http://localhost:${PORT}/api/find-dates`);
+  console.log(`  Find confirmed: GET http://localhost:${PORT}/api/find-confirmed`);
 });

@@ -73,4 +73,18 @@ function clear() {
   store.clear();
 }
 
-module.exports = { buildKey, get, set, clear };
+/**
+ * Build the cache key for the full calendar route search (NOT keyed by date).
+ *
+ * @param {string} trainNumber
+ * @param {string} boardingStation
+ * @param {string} destination
+ * @param {string} classCode
+ * @param {string} quotaCode
+ * @returns {string}
+ */
+function buildCalendarKey(trainNumber, boardingStation, destination, classCode, quotaCode) {
+  return `calendar_${trainNumber}_${boardingStation}_${destination}_${classCode}_${quotaCode}`;
+}
+
+module.exports = { buildKey, buildCalendarKey, get, set, clear };

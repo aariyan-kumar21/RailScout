@@ -1,19 +1,20 @@
 # RailScout
 
-A standalone web application that helps travelers find a nearby station with a **confirmed** ticket, when their actual boarding station only shows a waitlisted (WL) seat.
+A date-first train availability finder that scans Indian Railways ticket availability across a 14-day calendar window. When your requested date is waitlisted, RailScout immediately finds and highlights the **nearest confirmed date** (with weekday and days offset), and falls back to scanning earlier stations along the route if no dates are confirmed.
 
 ## The Problem
-On IRCTC, a train can show as waitlisted from your boarding station — but seats may actually be confirmed-available from a station a few stops earlier on the same route. Checking this manually means re-searching availability one station at a time. RailScout automates that scan across candidate stations preceding your boarding point.
+Single-date train queries often lead to disappointment when your chosen date is waitlisted. In reality, confirmed seats are frequently available on an adjacent day (e.g. 1–2 days earlier or later) or from an earlier station along the train route. Manually checking this on IRCTC requires searching each date and station individually. RailScout automates this in a single click.
 
 ## How It Works
-1. Enter your train number, boarding station, destination, date, and class in the web app (or click a quick demo preset).
-2. The backend fetches the train's full route and checks availability from every station between the origin and your boarding point.
-3. Results are ranked nearest-to-farthest, showing which stations offer confirmed berths, seat counts, and status badges.
-4. If the exact date has limited availability, confirmed alternatives on nearby dates are surfaced.
-5. Click through to IRCTC to book manually — RailScout never automates or interacts with IRCTC's site directly.
+1. **Date-First Scan**: Enter your train number, boarding station, destination, date, and class.
+2. **14-Day Calendar**: The backend queries RailRadar's availability endpoint once to fetch the full ~14-day calendar window.
+3. **Nearest Confirmed Date**: If the requested date has no confirmed seat, RailScout automatically computes the closest confirmed dates before and after, highlighting the nearest available date (e.g. *"Mon, 16 Oct (2 days later) — 8 seats"*).
+4. **Earlier Station Fallback**: If no date in the 14-day window has confirmed seats at your boarding station, RailScout automatically scans up to 5 earlier stations along the train route and surfaces the top 3 confirmed options.
+5. **Direct IRCTC Redirect**: Click through to IRCTC to book manually in a new tab — RailScout never automates or interacts with IRCTC directly.
 
 ## Why It's Built This Way
 - **No IRCTC automation**: all data comes from a third-party rail-data API (RailRadar), not from scraping or automating IRCTC's own website. Booking always happens manually, by the user, on IRCTC directly.
+- **Single Upstream Call & Aggressive Caching**: the 14-day calendar is fetched in one request and cached for 5 minutes by route/class (not date), protecting the 1,000 req/month free tier.
 - **API key stays server-side**: the frontend never talks to RailRadar directly — the backend proxy securely holds the key in `.env`.
 - **Zero install friction**: built as a standalone web application rather than a browser extension, making it immediately runnable and easy to demo in any browser.
 
@@ -63,16 +64,18 @@ Open your browser and navigate to:
 http://localhost:3000
 ```
 
-That's it! The full RailScout web app will load, allowing you to run searches, test demo presets, inspect candidate stations, and launch manual IRCTC booking searches.
+### Testing the API Directly
 
-You can also test the API directly:
 ```bash
 # Health check
 curl http://localhost:3000/health
 # → { "status": "ok", "service": "railscout-backend" }
 
-# Real availability scan
-curl "http://localhost:3000/api/find-confirmed?trainNumber=12952&boardingStation=KOTA&destination=NDLS&date=2026-09-05&classCode=3A"
+# Date-first calendar scan (primary)
+curl "http://localhost:3000/api/find-dates?trainNumber=12952&boardingStation=KOTA&destination=MMCT&date=2026-10-16&classCode=3A"
+
+# Earlier station route scan
+curl "http://localhost:3000/api/find-confirmed?trainNumber=12952&boardingStation=KOTA&destination=MMCT&date=2026-10-15&classCode=3A"
 ```
 
 ---
@@ -84,7 +87,8 @@ RailScout/
 ├── backend/
 │   ├── server.js               ← Express entry point & static file server
 │   ├── routes/
-│   │   └── findConfirmed.js    ← Station-scanning algorithm + /api/find-confirmed
+│   │   ├── findDates.js        ← Date-first calendar endpoint (/api/find-dates)
+│   │   └── findConfirmed.js    ← Station-scanning algorithm (/api/find-confirmed)
 │   ├── services/
 │   │   ├── railRadar.js        ← Axios wrapper for RailRadar API
 │   │   └── cache.js            ← In-memory 5-min TTL cache
