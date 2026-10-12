@@ -1,19 +1,21 @@
 # RailScout
 
-A browser extension that helps travelers find a nearby station with a **confirmed** ticket, when their actual boarding station only shows a waitlisted (WL) seat.
+A standalone web application that helps travelers find a nearby station with a **confirmed** ticket, when their actual boarding station only shows a waitlisted (WL) seat.
 
 ## The Problem
-On IRCTC, a train can show as waitlisted from your boarding station — but seats may actually be confirmed-available from a station a few stops earlier on the same route. Checking this manually means re-searching availability one station at a time. This tool automates that scan.
+On IRCTC, a train can show as waitlisted from your boarding station — but seats may actually be confirmed-available from a station a few stops earlier on the same route. Checking this manually means re-searching availability one station at a time. RailScout automates that scan across candidate stations preceding your boarding point.
 
 ## How It Works
-1. Enter your train number, boarding station, destination, date, and class in the extension popup
-2. The backend fetches the train's full route and checks availability from every station between the origin and your boarding point
-3. Results are ranked nearest-to-farthest, showing which stations have a confirmed seat
-4. Click through to IRCTC to book manually — this tool never books or automates anything on IRCTC's site
+1. Enter your train number, boarding station, destination, date, and class in the web app (or click a quick demo preset).
+2. The backend fetches the train's full route and checks availability from every station between the origin and your boarding point.
+3. Results are ranked nearest-to-farthest, showing which stations offer confirmed berths, seat counts, and status badges.
+4. If the exact date has limited availability, confirmed alternatives on nearby dates are surfaced.
+5. Click through to IRCTC to book manually — RailScout never automates or interacts with IRCTC's site directly.
 
 ## Why It's Built This Way
 - **No IRCTC automation**: all data comes from a third-party rail-data API (RailRadar), not from scraping or automating IRCTC's own website. Booking always happens manually, by the user, on IRCTC directly.
-- **API key stays server-side**: the extension never talks to RailRadar directly — a small backend proxy holds the key.
+- **API key stays server-side**: the frontend never talks to RailRadar directly — the backend proxy securely holds the key in `.env`.
+- **Zero install friction**: built as a standalone web application rather than a browser extension, making it immediately runnable and easy to demo in any browser.
 
 ## Stack
 See [TECH_STACK.md](./TECH_STACK.md).
@@ -32,7 +34,9 @@ See [TECH_STACK.md](./TECH_STACK.md).
 - Node.js ≥ 18
 - A [RailRadar API](https://api.railradar.in) key (free tier: 1,000 req/month)
 
-### Backend
+### Running the Application
+
+Running the backend dev server serves **both** the API and the frontend website together on `localhost:3000`:
 
 ```bash
 # 1. Move into the backend folder
@@ -41,42 +45,35 @@ cd backend
 # 2. Install dependencies
 npm install
 
-# 3. Create your .env file from the template
+# 3. Create your .env file from the template (if not already done)
 copy .env.example .env      # Windows
 # cp .env.example .env      # macOS/Linux
 
 # 4. Add your RailRadar API key to .env
 #    RAILRADAR_API_KEY=<your_key_here>
 
-# 5. Start the dev server (auto-restarts on file changes — Node 18+ built-in)
+# 5. Start the server (auto-restarts on file changes)
 npm run dev
 ```
 
-The server starts at **http://localhost:3000**.
+### Viewing the Website
 
+Open your browser and navigate to:
+```text
+http://localhost:3000
+```
+
+That's it! The full RailScout web app will load, allowing you to run searches, test demo presets, inspect candidate stations, and launch manual IRCTC booking searches.
+
+You can also test the API directly:
 ```bash
-# Confirm it's alive
+# Health check
 curl http://localhost:3000/health
 # → { "status": "ok", "service": "railscout-backend" }
 
-# Run a real availability scan
+# Real availability scan
 curl "http://localhost:3000/api/find-confirmed?trainNumber=12952&boardingStation=KOTA&destination=NDLS&date=2026-09-05&classCode=3A"
-
-# Test validation (missing params)
-curl "http://localhost:3000/api/find-confirmed?trainNumber=12952"
-# → { "success": false, "error": { "code": "INVALID_PARAMS", ... } }
 ```
-
-### Extension (Chrome)
-
-1. Open Google Chrome and navigate to `chrome://extensions`
-2. Enable **Developer mode** (toggle switch in the top right corner)
-3. Click **Load unpacked** (top left button)
-4. Select the `extension/` folder inside this repository:
-   ```text
-   c:\Users\Aariy\RailScout\extension
-   ```
-5. Click the RailScout icon in the Chrome toolbar to open the popup.
 
 ---
 
@@ -85,7 +82,7 @@ curl "http://localhost:3000/api/find-confirmed?trainNumber=12952"
 ```
 RailScout/
 ├── backend/
-│   ├── server.js               ← Express entry point
+│   ├── server.js               ← Express entry point & static file server
 │   ├── routes/
 │   │   └── findConfirmed.js    ← Station-scanning algorithm + /api/find-confirmed
 │   ├── services/
@@ -95,12 +92,10 @@ RailScout/
 │   │   └── parseAvailability.js ← Extracts availability from RailRadar calendar
 │   ├── .env.example
 │   └── package.json
-├── extension/
-│   ├── manifest.json           ← Manifest V3 extension configuration
-│   ├── popup.html              ← Extension popup markup and form
-│   ├── popup.css               ← Extension popup styles and status badges
-│   ├── popup.js                ← API fetch handler and UI renderer
-│   └── icons/                  ← Extension icons
+├── frontend/
+│   ├── index.html              ← Responsive web application markup & hero
+│   ├── style.css               ← High-aesthetic modern railway theme stylesheet
+│   └── app.js                  ← API fetch handler, state, filters & UI renderer
 ├── PRD.md
 ├── SCHEMA.md
 ├── TECH_STACK.md

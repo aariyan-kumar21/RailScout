@@ -14,18 +14,19 @@
   - Free tier: 1,000 requests/month
   - Fallback option if needed: RapidAPI "IRCTC" (irctc1, by JERC)
 
-## Extension
-- **Manifest V3** Chrome extension
-- **Vanilla JS + HTML/CSS** for the popup (v1) — keep it simple; React only if the UI grows complex enough to justify it
-- `fetch()` from the popup script to call the backend's `/api/find-confirmed` endpoint
-- No content-script / page injection in v1 (that's a stretch goal)
+## Frontend (Website)
+- **Vanilla JS + HTML5 + CSS3** — standalone full-page responsive website in `/frontend`
+- Served directly as static assets via Express in `/backend`, or runnable standalone
+- `fetch()` from `app.js` to call the `/api/find-confirmed` endpoint
+- Zero framework overhead — fast, lightweight, and easy to inspect and demo
 
 ## Version Control
 - Git + GitHub, `.gitignore` covering `node_modules/`, `.env`
 - Conventional commits (`feat:`, `fix:`, `docs:`) for a clean, readable history
 
 ## Explicitly Not Using
+- No Chrome extension (removed in favor of standalone website for zero install friction)
 - No database (nothing needs to persist between requests)
 - No auth/login system
 - No IRCTC scraping, no Puppeteer/Playwright automation against IRCTC's own site
-- No frontend framework unless the popup UI outgrows vanilla JS
+- No heavy frontend frameworks (React/Vue/Next.js) — pure HTML/CSS/JS keeps it simple and performant

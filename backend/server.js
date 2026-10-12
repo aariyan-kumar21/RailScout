@@ -13,6 +13,7 @@
 // Load environment variables from .env before any other module reads them
 require('dotenv').config();
 
+const path    = require('path');
 const express = require('express');
 const cors    = require('cors');
 
@@ -26,15 +27,16 @@ const PORT = process.env.PORT || 3000;
 // ---------------------------------------------------------------------------
 
 /**
- * CORS — required so the Chrome extension popup (a different origin) can
- * call this backend via fetch().  In production you would lock this down to
- * the extension's chrome-extension:// origin; for local dev we allow all.
+ * CORS — allows cross-origin requests when developing frontend independently.
  */
 app.use(cors());
 
 // Parse JSON request bodies (not strictly needed for query-param-only routes,
 // but good practice for future POST endpoints)
 app.use(express.json());
+
+// Serve static frontend website
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // ---------------------------------------------------------------------------
 // Routes
