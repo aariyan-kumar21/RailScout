@@ -19,7 +19,7 @@ const BACKEND_URL = (window.location.origin && window.location.origin.startsWith
   ? `${window.location.origin}/api/find-confirmed`
   : 'http://localhost:3000/api/find-confirmed';
 
-const IRCTC_SEARCH_URL = 'https://www.irctc.co.in/nget/train-search';
+const IRCTC_URL = 'https://www.irctc.co.in';
 
 // ---------------------------------------------------------------------------
 // DOM Elements
@@ -50,6 +50,7 @@ const statConfirmedCount = document.getElementById('statConfirmedCount');
 
 const topRecommendationBox = document.getElementById('topRecommendationBox');
 const recDescription = document.getElementById('recDescription');
+const recCopyBtn = document.getElementById('recCopyBtn');
 const recIrctcBtn = document.getElementById('recIrctcBtn');
 
 const rankedResultsHeading = document.getElementById('rankedResultsHeading');
@@ -64,6 +65,16 @@ const alternativesList = document.getElementById('alternativesList');
 // Current search state cache
 let currentResults = [];
 let currentFilter = 'all';
+let currentNearestConfirmed = null;
+let currentSearchContext = {
+  trainNumber: '',
+  trainName: '',
+  boardingStation: '',
+  destination: '',
+  destinationName: '',
+  date: '',
+  classCode: '',
+};
 
 // ---------------------------------------------------------------------------
 // Initialization
@@ -106,9 +117,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Top recommendation action button
+  // Top recommendation action buttons
   if (recIrctcBtn) {
     recIrctcBtn.addEventListener('click', openIrctcTab);
+  }
+
+  if (recCopyBtn) {
+    recCopyBtn.addEventListener('click', () => {
+      if (!currentNearestConfirmed) return;
+      const text = buildCopyText({
+        stationCode: currentNearestConfirmed.stationCode,
+        stationName: currentNearestConfirmed.stationName,
+        date: currentSearchContext.date,
+        scheduledDeparture: currentNearestConfirmed.scheduledDeparture,
+      });
+      copyTextToClipboard(text, recCopyBtn);
+    });
   }
 });
 
@@ -200,6 +224,16 @@ function renderFullResults(data) {
   } = data;
 
   currentResults = results;
+  currentNearestConfirmed = nearestConfirmed;
+  currentSearchContext = {
+    trainNumber,
+    trainName: trainName || `Train ${trainNumber}`,
+    boardingStation,
+    destination,
+    destinationName: data.destinationName || '',
+    date,
+    classCode,
+  };
 
   // 1. Train Summary Header
   summaryTrainBadge.textContent = `TRAIN ${trainNumber}`;
@@ -354,15 +388,36 @@ function createStationCard(station) {
   statusBox.appendChild(badge);
   statusBox.appendChild(subtext);
 
+  const actionGroup = document.createElement('div');
+  actionGroup.className = 'card-action-group';
+
+  const copyBtn = document.createElement('button');
+  copyBtn.type = 'button';
+  copyBtn.className = 'card-copy-btn';
+  copyBtn.textContent = 'Copy details';
+  copyBtn.title = `Copy journey details for ${station.stationCode} to clipboard`;
+  copyBtn.addEventListener('click', () => {
+    const text = buildCopyText({
+      stationCode: station.stationCode,
+      stationName: station.stationName,
+      date: currentSearchContext.date,
+      scheduledDeparture: station.scheduledDeparture,
+    });
+    copyTextToClipboard(text, copyBtn);
+  });
+
   const irctcBtn = document.createElement('button');
   irctcBtn.type = 'button';
   irctcBtn.className = 'card-irctc-btn';
-  irctcBtn.innerHTML = `<span>Search on IRCTC</span> <span>↗</span>`;
+  irctcBtn.innerHTML = `<span>Book on IRCTC</span> <span>↗</span>`;
   irctcBtn.title = `Open IRCTC in a new tab to book from ${station.stationCode}`;
   irctcBtn.addEventListener('click', openIrctcTab);
 
+  actionGroup.appendChild(copyBtn);
+  actionGroup.appendChild(irctcBtn);
+
   statusAction.appendChild(statusBox);
-  statusAction.appendChild(irctcBtn);
+  statusAction.appendChild(actionGroup);
 
   topRow.appendChild(infoGroup);
   topRow.appendChild(statusAction);
@@ -397,13 +452,38 @@ function renderAlternatives(alternatives, nearestConfirmed) {
             ${alt.availableSeats ? `${alt.availableSeats} seats confirmed` : alt.availabilityStatus || 'Confirmed Berth'}
           </div>
         </div>
-        <button type="button" class="card-irctc-btn" style="margin-top: 4px; justify-content: center;">
-          Search this date on IRCTC ↗
-        </button>
       `;
 
-      const btn = altCard.querySelector('button');
-      btn.addEventListener('click', openIrctcTab);
+      const actionGroup = document.createElement('div');
+      actionGroup.className = 'card-action-group';
+      actionGroup.style.marginTop = '6px';
+      actionGroup.style.justifyContent = 'center';
+
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'card-copy-btn';
+      copyBtn.textContent = 'Copy details';
+      copyBtn.title = 'Copy journey details to clipboard';
+      copyBtn.addEventListener('click', () => {
+        const text = buildCopyText({
+          stationCode: alt.stationCode,
+          stationName: alt.stationName || alt.stationCode,
+          date: alt.date || alt.journeyDate,
+          scheduledDeparture: alt.scheduledDeparture,
+        });
+        copyTextToClipboard(text, copyBtn);
+      });
+
+      const irctcBtn = document.createElement('button');
+      irctcBtn.type = 'button';
+      irctcBtn.className = 'card-irctc-btn';
+      irctcBtn.innerHTML = `<span>Book on IRCTC</span> <span>↗</span>`;
+      irctcBtn.title = 'Open IRCTC in a new tab to book for this date';
+      irctcBtn.addEventListener('click', openIrctcTab);
+
+      actionGroup.appendChild(copyBtn);
+      actionGroup.appendChild(irctcBtn);
+      altCard.appendChild(actionGroup);
 
       alternativesList.appendChild(altCard);
     });
@@ -482,7 +562,101 @@ function getAvailabilitySubtext(station) {
  * Open IRCTC search page in a new browser tab (RULES.md §1 & §2)
  */
 function openIrctcTab() {
-  window.open(IRCTC_SEARCH_URL, '_blank', 'noopener,noreferrer');
+  window.open(IRCTC_URL, '_blank', 'noopener,noreferrer');
+}
+
+/**
+ * Format YYYY-MM-DD into "DayOfWeek, D MMM YYYY", e.g. "Sat, 14 Oct 2026"
+ */
+function formatJourneyDateForCopy(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const [year, month, day] = dateStr.split('-');
+    const dateObj = new Date(parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10));
+    const weekday = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+    const formattedDate = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `${weekday}, ${formattedDate}`;
+  } catch (_e) {
+    return dateStr;
+  }
+}
+
+/**
+ * Build plain text journey details for easy copying to IRCTC
+ * Matches:
+ *   Train: 12952 (<train name>)
+ *   From: BRC Vadodara Jn  To: MMCT Mumbai Central
+ *   Date: Sat, 14 Oct 2026   Class: 3A
+ *   Departs: 14:35
+ */
+function buildCopyText({ stationCode, stationName, date, scheduledDeparture }) {
+  const trainNum = currentSearchContext.trainNumber || '';
+  const trainNm = currentSearchContext.trainName ? ` (${currentSearchContext.trainName})` : '';
+  const destCode = currentSearchContext.destination || '';
+  const destName = currentSearchContext.destinationName ? ` ${currentSearchContext.destinationName}` : '';
+  const dateFormatted = formatJourneyDateForCopy(date || currentSearchContext.date);
+  const cls = currentSearchContext.classCode || '';
+
+  const lines = [
+    `Train: ${trainNum}${trainNm}`,
+    `From: ${stationCode} ${stationName}  To: ${destCode}${destName}`,
+    `Date: ${dateFormatted}   Class: ${cls}`,
+  ];
+
+  if (scheduledDeparture) {
+    lines.push(`Departs: ${scheduledDeparture}`);
+  }
+
+  return lines.join('\n');
+}
+
+/**
+ * Copy text to clipboard with navigator.clipboard and fallback,
+ * updating the button label to "Copied ✓" for 2 seconds.
+ */
+async function copyTextToClipboard(text, buttonElement) {
+  let success = false;
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      success = true;
+    } else {
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      success = document.execCommand('copy');
+      document.body.removeChild(textArea);
+    }
+  } catch (err) {
+    console.error('Clipboard copy failed:', err);
+    success = false;
+  }
+
+  if (success) {
+    const originalContent = buttonElement.innerHTML;
+    buttonElement.textContent = 'Copied ✓';
+    buttonElement.classList.add('copied');
+
+    // Clear any previous timer if button was clicked repeatedly
+    if (buttonElement.dataset.copyTimer) {
+      clearTimeout(parseInt(buttonElement.dataset.copyTimer, 10));
+    }
+
+    const timerId = setTimeout(() => {
+      buttonElement.innerHTML = originalContent;
+      buttonElement.classList.remove('copied');
+      delete buttonElement.dataset.copyTimer;
+    }, 2000);
+
+    buttonElement.dataset.copyTimer = timerId.toString();
+  } else {
+    alert('Unable to copy automatically to clipboard. Please copy details manually:\n\n' + text);
+  }
 }
 
 /**

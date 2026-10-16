@@ -933,6 +933,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: var(--text-main);
 }
 
+.rec-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.rec-copy-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.rec-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.rec-copy-btn.copied {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #10b981;
+}
+
 .rec-action-btn {
   background: var(--irctc-orange);
   color: #ffffff;
@@ -1154,6 +1187,43 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .subtext-rac { color: var(--status-rac-text); }
 .subtext-waitlist { color: var(--status-wl-text); }
 .subtext-unknown { color: var(--text-muted); }
+
+.card-action-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.card-copy-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.card-copy-btn.copied {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #10b981;
+}
 
 .card-irctc-btn {
   display: inline-flex;
@@ -1422,5 +1492,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .stat-box {
     flex: 1;
+  }
+  
+  .recommendation-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .rec-actions {
+    width: 100%;
+    justify-content: flex-start;
   }
 }
