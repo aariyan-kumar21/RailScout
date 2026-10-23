@@ -121,6 +121,20 @@ body {
   color: inherit;
 }
 
+.brand-logo {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.4));
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+.brand-link:hover .brand-logo {
+  transform: scale(1.06);
+  filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.7));
+}
+
 .brand-icon {
   background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.2));
   color: var(--accent-cyan);
@@ -1404,9 +1418,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 16px;
   font-weight: 700;
   color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.footer-logo {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.35));
 }
 
 .footer-copy {
