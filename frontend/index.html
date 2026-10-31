@@ -1,16 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>RailScout — Find Confirmed Train Seats From Earlier Stations</title>
-  <meta name="description" content="Discover confirmed train tickets on Indian Railways when your boarding station is waitlisted. RailScout scans earlier stops along the route where seat quotas are still available." />
+  <title>RailScout</title>
+  <meta name="description"
+    content="Discover confirmed train tickets on Indian Railways when your boarding station is waitlisted. RailScout scans earlier stops along the route where seat quotas are still available." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
   <link rel="icon" type="image/png" href="logo.png" />
 </head>
+
 <body>
   <!-- Header / Navigation -->
   <header class="navbar">
@@ -42,7 +47,9 @@
         <span class="gradient-text">Find confirmed seats</span> a few stops back.
       </h1>
       <p class="hero-subtitle">
-        IRCTC assigns seat quotas per station. When your boarding station is waitlisted, earlier stations on the exact same train often still have confirmed berths. RailScout scans the entire route backward to pinpoint your nearest confirmed seat.
+        IRCTC assigns seat quotas per station. When your boarding station is waitlisted, earlier stations on the exact
+        same train often still have confirmed berths. RailScout scans the entire route backward to pinpoint your nearest
+        confirmed seat.
       </p>
     </div>
   </section>
@@ -50,7 +57,7 @@
   <!-- Search Section -->
   <main class="main-content" id="search-section">
     <div class="content-container">
-      
+
       <!-- Search Card -->
       <div class="search-card">
         <div class="search-card-header">
@@ -61,13 +68,15 @@
           <!-- Quick Preset Demos -->
           <div class="demo-presets">
             <span class="presets-label">Quick Test:</span>
-            <button type="button" class="preset-chip" data-train="12951" data-from="KOTA" data-to="NDLS" data-class="3A">
+            <button type="button" class="preset-chip" data-train="12951" data-from="KOTA" data-to="NDLS"
+              data-class="3A">
               12951 Rajdhani (KOTA → NDLS)
             </button>
             <button type="button" class="preset-chip" data-train="12301" data-from="CNB" data-to="NDLS" data-class="3A">
               12301 Rajdhani (CNB → NDLS)
             </button>
-            <button type="button" class="preset-chip" data-train="12952" data-from="KOTA" data-to="MMCT" data-class="3A">
+            <button type="button" class="preset-chip" data-train="12952" data-from="KOTA" data-to="MMCT"
+              data-class="3A">
               12952 Rajdhani (KOTA → MMCT)
             </button>
           </div>
@@ -83,15 +92,8 @@
               </label>
               <div class="input-wrapper">
                 <span class="input-icon">🚆</span>
-                <input 
-                  type="text" 
-                  id="trainNumber" 
-                  name="trainNumber" 
-                  placeholder="e.g. 12952" 
-                  maxlength="5"
-                  required 
-                  autocomplete="off"
-                />
+                <input type="text" id="trainNumber" name="trainNumber" placeholder="e.g. 12952" maxlength="5" required
+                  autocomplete="off" />
               </div>
             </div>
 
@@ -103,15 +105,8 @@
               </label>
               <div class="input-wrapper">
                 <span class="input-icon">📍</span>
-                <input 
-                  type="text" 
-                  id="boardingStation" 
-                  name="boardingStation" 
-                  placeholder="e.g. KOTA" 
-                  maxlength="6"
-                  required 
-                  autocomplete="off"
-                />
+                <input type="text" id="boardingStation" name="boardingStation" placeholder="e.g. KOTA" maxlength="6"
+                  required autocomplete="off" />
               </div>
             </div>
 
@@ -123,15 +118,8 @@
               </label>
               <div class="input-wrapper">
                 <span class="input-icon">🏁</span>
-                <input 
-                  type="text" 
-                  id="destination" 
-                  name="destination" 
-                  placeholder="e.g. NDLS" 
-                  maxlength="6"
-                  required 
-                  autocomplete="off"
-                />
+                <input type="text" id="destination" name="destination" placeholder="e.g. NDLS" maxlength="6" required
+                  autocomplete="off" />
               </div>
             </div>
 
@@ -143,13 +131,7 @@
               </label>
               <div class="input-wrapper">
                 <span class="input-icon">📅</span>
-                <input 
-                  type="date" 
-                  id="date" 
-                  name="date" 
-                  value="2026-10-15"
-                  required 
-                />
+                <input type="date" id="date" name="date" value="2026-10-15" required />
               </div>
             </div>
 
@@ -177,7 +159,8 @@
           <div class="form-actions">
             <button type="submit" id="submitBtn" class="submit-btn">
               <span class="btn-content">
-                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
@@ -208,76 +191,69 @@
           </div>
         </div>
         <h3 class="loading-title">Scanning Station Availability...</h3>
-        <p class="loading-desc">Fetching full train timetable and querying live seat inventory for candidate boarding stops.</p>
+        <p class="loading-desc">Fetching full train timetable and querying live seat inventory for candidate boarding
+          stops.</p>
       </div>
 
       <!-- Results Section -->
       <section id="resultsSection" class="results-section hidden">
-        
+
         <!-- Results Overview Header Card -->
         <div class="results-summary-card">
           <div class="summary-top">
             <div class="summary-train-info">
               <span class="summary-train-badge" id="summaryTrainNumber">TRAIN 12952</span>
               <h2 class="summary-train-name" id="summaryTrainName">MUMBAI RAJDHANI</h2>
-              <p class="summary-route" id="summaryRouteDesc">Scanning stops between Origin and KOTA → NDLS</p>
+              <p class="summary-route" id="summaryRouteDesc">KOTA → MMCT • 3A AC 3 Tier</p>
             </div>
             <div class="summary-stats">
               <div class="stat-box">
-                <span class="stat-value" id="statStopsCount">0</span>
-                <span class="stat-label">Candidate Stops</span>
+                <span class="stat-value" id="statDaysCount">11</span>
+                <span class="stat-label">Days Scanned</span>
               </div>
               <div class="stat-box highlight">
-                <span class="stat-value" id="statConfirmedCount">0</span>
-                <span class="stat-label">Confirmed Stops</span>
+                <span class="stat-value" id="statConfirmedDaysCount">0</span>
+                <span class="stat-label">Confirmed Days</span>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Highlight Recommendation Banner (when confirmed stops exist) -->
-          <div id="topRecommendationBox" class="recommendation-banner hidden">
-            <div class="rec-icon">🎯</div>
-            <div class="rec-text">
-              <span class="rec-title">Best Available Option:</span>
-              <span class="rec-desc" id="recDescription"></span>
+        <!-- 1. Date Cards: 2 Rows of 5 Cards (No Left/Right Scrolling) -->
+        <div class="calendar-strip-section">
+          <div class="strip-header-bar">
+            <div class="strip-title-group">
+              <span class="strip-icon">🗓️</span>
+              <div>
+                <h3 class="strip-title">Daily Ticket Availability</h3>
+                <p class="strip-subtitle">Showing 10 dates (5 on top row, 5 on bottom row)</p>
+              </div>
             </div>
-            <div class="rec-actions">
-              <button type="button" id="recCopyBtn" class="rec-copy-btn" title="Copy journey details to clipboard">
-                Copy details
-              </button>
-              <button type="button" id="recIrctcBtn" class="rec-action-btn">
-                Book on IRCTC ↗
-              </button>
+            <div class="strip-legend">
+              <span class="legend-chip legend-avl"><span class="chip-dot"></span> Available</span>
+              <span class="legend-chip legend-rac"><span class="chip-dot"></span> RAC</span>
+              <span class="legend-chip legend-wl"><span class="chip-dot"></span> Waitlist</span>
             </div>
+          </div>
+
+          <div class="date-cards-grid" id="horizontalDateCards">
+            <!-- Dynamically rendered: 5 cards on top row, 5 cards on bottom row -->
           </div>
         </div>
 
-        <!-- Filter Controls -->
-        <div class="results-toolbar">
-          <div class="toolbar-title">
-            <h3 id="rankedResultsHeading">Ranked Candidate Stations (Nearest to Boarding First)</h3>
-            <span class="toolbar-hint">Showing stations from train origin up to your boarding station</span>
+        <!-- 2. Two Cards Below: Searched Date Status & Best Alternative -->
+        <div class="two-cards-grid">
+          <!-- Card 1: Status of the date for which you are searching -->
+          <div class="outcome-card searched-card" id="cardSearchedDate">
+            <!-- Dynamically rendered via app.js -->
           </div>
-          <div class="filter-pills">
-            <button type="button" class="filter-pill active" data-filter="all">All Stops (<span id="countAllFilter">0</span>)</button>
-            <button type="button" class="filter-pill" data-filter="confirmed">Confirmed Only (<span id="countConfirmedFilter">0</span>)</button>
+
+          <!-- Card 2: Best alternative of the tickets -->
+          <div class="outcome-card alternative-card" id="cardBestAlternative">
+            <!-- Dynamically rendered via app.js -->
           </div>
         </div>
 
-        <!-- Candidate Stations List -->
-        <div id="resultsList" class="results-list"></div>
-
-        <!-- Confirmed Alternatives Section (Alternative dates / stations) -->
-        <div id="alternativesSection" class="alternatives-section hidden">
-          <div class="alternatives-header">
-            <div class="alt-header-icon">🗓️</div>
-            <div>
-              <h3 class="alt-title">Confirmed Alternatives (Nearby Dates)</h3>
-              <p class="alt-subtitle">When your chosen date has limited seats, consider these nearby confirmed departures</p>
-            </div>
-          </div>
-          <div id="alternativesList" class="alternatives-list"></div>
-        </div>
       </section>
 
     </div>
@@ -293,11 +269,13 @@
         </span>
       </div>
       <div class="footer-disclaimer">
-        Disclaimer: RailScout is an independent utility powered by RailRadar data. It does not automate, book, or process transactions on irctc.co.in. All bookings are completed manually by the user directly on IRCTC.
+        Disclaimer: RailScout is an independent utility powered by RailRadar data. It does not automate, book, or
+        process transactions on irctc.co.in. All bookings are completed manually by the user directly on IRCTC.
       </div>
     </div>
   </footer>
 
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -1529,3 +1529,599 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     justify-content: flex-start;
   }
 }
+
+/* ==========================================================================
+   Horizontal Date Strip & 2-Outcome Cards (PRD & Date-First Layout)
+   ========================================================================== */
+
+/* 1. Horizontal Date Strip Section */
+.calendar-strip-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: 22px 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.strip-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.strip-title-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.strip-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.strip-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.strip-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.strip-legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  letter-spacing: 0.02em;
+}
+
+.chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legend-avl {
+  background: var(--status-avl-bg);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--status-avl-text);
+}
+.legend-avl .chip-dot {
+  background: var(--status-avl-text);
+  box-shadow: 0 0 6px var(--status-avl-text);
+}
+
+.legend-rac {
+  background: var(--status-rac-bg);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--status-rac-text);
+}
+.legend-rac .chip-dot {
+  background: var(--status-rac-text);
+  box-shadow: 0 0 6px var(--status-rac-text);
+}
+
+.legend-wl {
+  background: var(--status-wl-bg);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: var(--status-wl-text);
+}
+.legend-wl .chip-dot {
+  background: var(--status-wl-text);
+  box-shadow: 0 0 6px var(--status-wl-text);
+}
+
+/* Date Cards Grid: 2 rows of 5 cards without left/right scrolling */
+.date-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .date-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .date-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual Date Card */
+.date-card {
+  width: 100%;
+  min-width: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  position: relative;
+  user-select: none;
+}
+
+.date-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-focus);
+  background: var(--bg-card-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.date-card.active {
+  border-color: var(--accent-cyan);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.12) 0%, var(--bg-card) 100%);
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+}
+
+/* First Card: Searched Date highlight */
+.date-card.is-searched {
+  border-color: rgba(56, 189, 248, 0.6);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.15) 0%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+.date-card.is-searched.active {
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+}
+
+.date-card-tag {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 999px;
+  line-height: 1.2;
+}
+
+.date-card.is-searched .date-card-tag {
+  background: var(--accent-cyan-glow);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.date-card:not(.is-searched) .date-card-tag {
+  background: rgba(148, 163, 184, 0.1);
+  color: var(--text-muted);
+}
+
+.date-card-weekday {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+}
+
+.date-card-numdate {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.date-card-status {
+  width: 100%;
+  padding: 5px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  line-height: 1.2;
+}
+
+.status-avl {
+  background: var(--status-avl-bg);
+  border: 1px solid var(--status-avl-border);
+  color: var(--status-avl-text);
+}
+
+.status-rac {
+  background: var(--status-rac-bg);
+  border: 1px solid var(--status-rac-border);
+  color: var(--status-rac-text);
+}
+
+.status-wl {
+  background: var(--status-wl-bg);
+  border: 1px solid var(--status-wl-border);
+  color: var(--status-wl-text);
+}
+
+.status-unk {
+  background: var(--status-unk-bg);
+  border: 1px solid var(--status-unk-border);
+  color: var(--status-unk-text);
+}
+
+/* ==========================================================================
+   2. Two Outcome Cards Grid (Below Horizontal Calendar)
+   ========================================================================== */
+
+.two-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .two-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.outcome-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.searched-card {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: linear-gradient(180deg, rgba(56, 189, 248, 0.04) 0%, var(--bg-surface) 100%);
+}
+
+.searched-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
+}
+
+.alternative-card {
+  border-color: rgba(16, 185, 129, 0.4);
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.05) 0%, var(--bg-surface) 100%);
+  box-shadow: 0 8px 30px -5px rgba(16, 185, 129, 0.15);
+}
+
+.alternative-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--status-avl-text), #10b981);
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.card-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.card-main-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.card-pill-tag {
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.tag-searched {
+  background: var(--accent-cyan-glow);
+  color: var(--accent-cyan);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.tag-best {
+  background: rgba(16, 185, 129, 0.18);
+  color: var(--status-avl-text);
+  border: 1px solid var(--status-avl-border);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+}
+
+/* Journey Meta Row */
+.journey-info-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.train-title-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.train-tag {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 7px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  color: var(--accent-cyan);
+  border-radius: var(--radius-sm);
+}
+
+.train-display-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.route-stations-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.station-badge-code {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  background: var(--bg-input);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.arrow-divider {
+  color: var(--accent-cyan);
+}
+
+.class-tag {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 8px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  color: #a5b4fc;
+  border-radius: var(--radius-sm);
+}
+
+/* Status Showcase Box */
+.status-highlight-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: var(--radius-md);
+  margin-top: 4px;
+}
+
+.panel-avl {
+  background: var(--status-avl-bg);
+  border: 1px solid var(--status-avl-border);
+}
+
+.panel-rac {
+  background: var(--status-rac-bg);
+  border: 1px solid var(--status-rac-border);
+}
+
+.panel-wl {
+  background: var(--status-wl-bg);
+  border: 1px solid var(--status-wl-border);
+}
+
+.status-left-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.status-subheading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.panel-avl .status-subheading {
+  color: var(--status-avl-text);
+}
+.panel-rac .status-subheading {
+  color: var(--status-rac-text);
+}
+.panel-wl .status-subheading {
+  color: var(--status-wl-text);
+}
+
+.status-main-badge {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.panel-avl .status-main-badge {
+  color: var(--status-avl-text);
+}
+.panel-rac .status-main-badge {
+  color: var(--status-rac-text);
+}
+.panel-wl .status-main-badge {
+  color: var(--status-wl-text);
+}
+
+.date-indicator-badge {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.date-weekday-sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.date-exact-main {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* Insight Box */
+.card-insight-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-subtle);
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.insight-icon {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.insight-text strong {
+  color: var(--text-main);
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Actions Row */
+.outcome-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.btn-book-irctc {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--irctc-orange);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.btn-book-irctc:hover {
+  background: var(--irctc-orange-hover);
+  box-shadow: 0 0 15px var(--irctc-orange-glow);
+  transform: translateY(-1px);
+}
+
+.btn-book-success {
+  background: linear-gradient(135deg, #059669, #10b981);
+}
+
+.btn-book-success:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.btn-card-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 11px 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-card-secondary:hover {
+  color: var(--text-main);
+  border-color: var(--text-secondary);
+  background: var(--bg-card-hover);
+}
