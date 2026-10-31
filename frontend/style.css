@@ -233,29 +233,56 @@ body {
 }
 
 /* ==========================================================================
-   Hero Section
+   Hero Section with Panoramic Train Background
    ========================================================================== */
 
 .hero-section {
-  padding: 44px 24px 36px;
+  position: relative;
+  background-image: url('hero-bg.jpg?v=2');
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  padding: 56px 24px 64px;
+  overflow: hidden;
+  /* Crystal-clear rendering */
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* Seamless Left Gradient Overlay for text contrast while preserving train visibility */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.82) 32%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0.1) 68%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Seamless Bottom Gradient Blend into the website body */
+.hero-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 90px;
+  background: linear-gradient(to bottom, rgba(248, 250, 252, 0) 0%, var(--bg-base) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .hero-container {
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.hero-split {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  align-items: center;
-  gap: 36px;
-}
-
-@media (max-width: 900px) {
-  .hero-split {
-    grid-template-columns: 1fr;
-  }
+  position: relative;
+  z-index: 2;
 }
 
 .hero-content {
@@ -263,6 +290,7 @@ body {
   flex-direction: column;
   align-items: flex-start;
   text-align: left;
+  max-width: 580px;
 }
 
 .hero-title {
@@ -272,6 +300,7 @@ body {
   line-height: 1.12;
   color: #0f172a;
   margin-bottom: 18px;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .hero-highlight {
@@ -280,10 +309,10 @@ body {
 
 .hero-subtitle {
   font-size: 16px;
-  color: var(--text-secondary);
+  color: #334155;
   line-height: 1.6;
-  max-width: 500px;
-  margin-bottom: 28px;
+  max-width: 480px;
+  margin-bottom: 30px;
 }
 
 .hero-actions {
@@ -306,13 +335,13 @@ body {
   border-radius: 12px;
   text-decoration: none;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
 }
 
 .btn-hero-primary:hover {
   background: var(--accent-blue-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
 }
 
 .btn-hero-secondary {
@@ -320,7 +349,8 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
   color: #0f172a;
   font-weight: 700;
   font-size: 15px;
@@ -334,7 +364,7 @@ body {
 
 .btn-hero-secondary:hover {
   border-color: var(--border-medium);
-  background: #f8fafc;
+  background: #ffffff;
   transform: translateY(-2px);
 }
 
@@ -350,66 +380,12 @@ body {
   font-size: 10px;
 }
 
-/* Hero Visual / Scenic Train Banner */
-.hero-visual-card {
-  width: 100%;
-}
-
-.hero-train-banner {
-  width: 100%;
-  height: 330px;
-  border-radius: 20px;
-  background-image: url('hero-banner.jpg');
-  background-size: 195%;
-  background-position: right 36%;
-  background-repeat: no-repeat;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 16px 36px -10px rgba(15, 23, 42, 0.12);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-}
-
-/* Signboard Overlay */
-.train-signboard {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  background: #1e3a8a;
-  border: 3.5px solid #d97706;
-  border-radius: 6px;
-  padding: 12px 18px;
-  color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  transform: rotate(-1deg);
-}
-
-.sign-top {
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.05em;
-}
-
-.sign-title {
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-}
-
-.sign-sub {
-  font-size: 14px;
-  font-weight: 600;
-  opacity: 0.9;
-}
-
 /* 4 Feature Cards Grid */
 .hero-features-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 18px;
-  margin-top: 48px;
+  margin-top: 56px;
 }
 
 @media (max-width: 900px) {
@@ -425,21 +401,24 @@ body {
 }
 
 .hero-feature-card {
-  background: #ffffff;
-  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   border-radius: 16px;
   padding: 22px 20px;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .hero-feature-card:hover {
   transform: translateY(-3px);
-  border-color: #bfdbfe;
-  box-shadow: 0 10px 25px -4px rgba(37, 99, 235, 0.08);
+  background: #ffffff;
+  border-color: #93c5fd;
+  box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.14);
 }
 
 .feature-icon-box {
@@ -462,6 +441,24 @@ body {
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.45;
+}
+
+@media (max-width: 768px) {
+  .hero-section {
+    background-position: 80% center;
+    padding: 40px 16px 48px;
+  }
+  .hero-section::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.9) 60%,
+      rgba(255, 255, 255, 0.7) 100%
+    );
+  }
+  .hero-content {
+    max-width: 100%;
+  }
 }
 
 /* Visual Explanation Diagram */
