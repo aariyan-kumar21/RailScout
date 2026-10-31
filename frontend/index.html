@@ -26,31 +26,121 @@
           <span class="brand-title">RailScout</span>
         </div>
       </a>
-      <div class="nav-links">
-        <a href="#search-section" class="nav-item">Find Seats</a>
+      <nav class="nav-links">
+        <a href="#hero" class="nav-item active">Home</a>
+        <a href="#features" class="nav-item">Features</a>
+        <a href="#search-section" class="nav-item">How It Works</a>
+        <a href="#about" class="nav-item">About</a>
+      </nav>
+      <div class="nav-actions">
         <a href="https://www.irctc.co.in" target="_blank" rel="noopener noreferrer" class="nav-irctc-btn">
           Open IRCTC ↗
         </a>
+        <button type="button" class="theme-toggle-btn" aria-label="Light mode active" title="Light theme">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </header>
 
   <!-- Hero Section -->
-  <section class="hero-section">
+  <section class="hero-section" id="hero">
     <div class="hero-container">
-      <div class="hero-badge">
-        <span class="pulse-dot"></span>
-        <span>Solve the Indian Railways Boarding Quota Gap</span>
+      <!-- Split Hero Content -->
+      <div class="hero-split">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            Find Confirmed<br />
+            Seats, <span class="hero-highlight">Smarter.</span>
+          </h1>
+          <p class="hero-subtitle">
+            Scan the entire route backwards to find the nearest station with confirmed berths and travel stress-free.
+          </p>
+          <div class="hero-actions">
+            <a href="#search-section" class="btn-hero-primary">
+              Search Seats →
+            </a>
+            <a href="#search-section" class="btn-hero-secondary">
+              <span class="btn-play-icon">▶</span>
+              How It Works
+            </a>
+          </div>
+        </div>
+
+        <div class="hero-visual-card">
+          <div class="hero-train-banner">
+            <div class="train-signboard">
+              <span class="sign-top">A</span>
+              <span class="sign-title">Better Way</span>
+              <span class="sign-sub">to Travel</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <h1 class="hero-title">
-        Waitlisted from your station?<br />
-        <span class="gradient-text">Find confirmed seats</span> a few stops back.
-      </h1>
-      <p class="hero-subtitle">
-        IRCTC assigns seat quotas per station. When your boarding station is waitlisted, earlier stations on the exact
-        same train often still have confirmed berths. RailScout scans the entire route backward to pinpoint your nearest
-        confirmed seat.
-      </p>
+
+      <!-- 4 Feature Cards -->
+      <div class="hero-features-grid" id="features">
+        <div class="hero-feature-card">
+          <div class="feature-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <h3 class="feature-title">Smart Route Scan</h3>
+            <p class="feature-desc">Checks availability from every previous station</p>
+          </div>
+        </div>
+
+        <div class="hero-feature-card">
+          <div class="feature-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <h3 class="feature-title">Real-time Data</h3>
+            <p class="feature-desc">Live seat updates from IRCTC</p>
+          </div>
+        </div>
+
+        <div class="hero-feature-card">
+          <div class="feature-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <h3 class="feature-title">Nearest Confirmed</h3>
+            <p class="feature-desc">Finds the closest station with confirmed seats</p>
+          </div>
+        </div>
+
+        <div class="hero-feature-card">
+          <div class="feature-icon-box">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="feature-content">
+            <h3 class="feature-title">Save Time &amp; Hassle</h3>
+            <p class="feature-desc">Skip long waitlists and travel with confidence</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
