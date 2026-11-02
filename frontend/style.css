@@ -99,13 +99,27 @@ body {
    ========================================================================== */
 
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 50;
-  background: rgba(255, 255, 255, 0.9);
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid transparent;
+  padding: 16px 24px;
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease, padding 0.3s ease;
+}
+
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 14px 24px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+  padding: 12px 24px;
 }
 
 .nav-container {
@@ -198,7 +212,7 @@ body {
   font-size: 13.5px;
   font-weight: 600;
   color: var(--accent-blue);
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.9);
   border: 1.5px solid #bfdbfe;
   padding: 7px 18px;
   border-radius: 999px;
@@ -212,26 +226,6 @@ body {
   color: var(--accent-blue-hover);
 }
 
-.theme-toggle-btn {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  border: 1px solid var(--border-subtle);
-  background: #ffffff;
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.theme-toggle-btn:hover {
-  color: var(--accent-blue);
-  border-color: var(--accent-blue);
-  background: var(--accent-blue-light);
-}
-
 /* ==========================================================================
    Hero Section with Panoramic Train Background
    ========================================================================== */
@@ -242,7 +236,7 @@ body {
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
-  padding: 56px 24px 64px;
+  padding: 115px 24px 64px;
   overflow: hidden;
   /* Crystal-clear rendering */
   image-rendering: -webkit-optimize-contrast;
@@ -384,8 +378,8 @@ body {
 .hero-features-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-top: 56px;
+  gap: 14px;
+  margin-top: 44px;
 }
 
 @media (max-width: 900px) {
@@ -405,26 +399,26 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 16px;
-  padding: 22px 20px;
-  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
+  border-radius: 14px;
+  padding: 16px 15px;
+  box-shadow: 0 6px 20px -4px rgba(15, 23, 42, 0.07);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 9px;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .hero-feature-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   background: #ffffff;
   border-color: #93c5fd;
-  box-shadow: 0 12px 28px -4px rgba(37, 99, 235, 0.14);
+  box-shadow: 0 10px 24px -4px rgba(37, 99, 235, 0.12);
 }
 
 .feature-icon-box {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 35px;
+  height: 35px;
+  border-radius: 9px;
   background: var(--accent-blue-light);
   display: flex;
   align-items: center;
@@ -432,21 +426,21 @@ body {
 }
 
 .feature-title {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: #0f172a;
 }
 
 .feature-desc {
-  font-size: 13px;
+  font-size: 11.5px;
   color: var(--text-muted);
-  line-height: 1.45;
+  line-height: 1.4;
 }
 
 @media (max-width: 768px) {
   .hero-section {
     background-position: 80% center;
-    padding: 40px 16px 48px;
+    padding: 96px 16px 48px;
   }
   .hero-section::before {
     background: linear-gradient(

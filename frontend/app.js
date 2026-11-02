@@ -846,3 +846,20 @@ function hideResults() {
   cardSearchedDate.innerHTML = '';
   cardBestAlternative.innerHTML = '';
 }
+
+// ---------------------------------------------------------------------------
+// Navbar Scroll Transition (Transparent at top -> Solid white on scroll)
+// ---------------------------------------------------------------------------
+const siteNavbar = document.querySelector('.navbar');
+if (siteNavbar) {
+  const updateNavbarOnScroll = () => {
+    if (window.scrollY > 20) {
+      siteNavbar.classList.add('scrolled');
+    } else {
+      siteNavbar.classList.remove('scrolled');
+    }
+  };
+  window.addEventListener('scroll', updateNavbarOnScroll, { passive: true });
+  updateNavbarOnScroll();
+}
+
