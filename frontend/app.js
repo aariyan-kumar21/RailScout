@@ -15,14 +15,17 @@
 // Configuration
 // ---------------------------------------------------------------------------
 
-const BACKEND_URL =
-  window.location.origin &&
-  window.location.origin.startsWith('http') &&
-  !window.location.origin.includes('file')
-    ? `${window.location.origin}/api/find-dates`
-    : 'http://localhost:5000/api/find-dates';
+const BACKEND_BASE_URL =
+  (window.API_CONFIG && window.API_CONFIG.BASE_URL) ||
+  'https://railscout-backend.onrender.com';
 
-const IRCTC_URL = 'https://www.irctc.co.in';
+const BACKEND_URL =
+  (window.API_CONFIG && window.API_CONFIG.ENDPOINTS && window.API_CONFIG.ENDPOINTS.FIND_DATES) ||
+  `${BACKEND_BASE_URL}/api/find-dates`;
+
+const IRCTC_URL =
+  (window.API_CONFIG && window.API_CONFIG.IRCTC_URL) ||
+  'https://www.irctc.co.in';
 
 // ---------------------------------------------------------------------------
 // DOM Elements
@@ -134,9 +137,20 @@ searchForm.addEventListener('submit', async (event) => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-    const response = await fetch(`${BACKEND_URL}?${params.toString()}`, {
-      signal: controller.signal,
-    });
+    let targetUrl = `${BACKEND_URL}?${params.toString()}`;
+    let response;
+    try {
+      response = await fetch(targetUrl, { signal: controller.signal });
+    } catch (netErr) {
+      // If a local endpoint was tried and failed, failover once to deployed production Render backend
+      const prodUrl = `${(window.API_CONFIG && window.API_CONFIG.PRODUCTION_BACKEND_URL) || 'https://railscout-backend.onrender.com'}/api/find-dates`;
+      if (!targetUrl.startsWith(prodUrl)) {
+        console.warn('Initial backend endpoint unreachable. Retrying with production backend...', prodUrl);
+        response = await fetch(`${prodUrl}?${params.toString()}`, { signal: controller.signal });
+      } else {
+        throw netErr;
+      }
+    }
 
     clearTimeout(timeoutId);
 
@@ -848,9 +862,12 @@ function hideResults() {
 }
 
 // ---------------------------------------------------------------------------
-// Navbar Scroll Transition (Transparent at top -> Solid white on scroll)
+// Navbar Scroll Transition & Active Nav Spying
 // ---------------------------------------------------------------------------
 const siteNavbar = document.querySelector('.navbar');
+const navLinks = document.querySelectorAll('.nav-links .nav-item');
+const navSections = document.querySelectorAll('section[id], main[id]');
+
 if (siteNavbar) {
   const updateNavbarOnScroll = () => {
     if (window.scrollY > 20) {
@@ -858,8 +875,62 @@ if (siteNavbar) {
     } else {
       siteNavbar.classList.remove('scrolled');
     }
+
+    // Update active nav link based on scroll position
+    let currentSectionId = '';
+    const scrollPosition = window.scrollY + 140;
+
+    navSections.forEach((section) => {
+      const top = section.offsetTop;
+      const height = section.offsetHeight;
+      if (scrollPosition >= top && scrollPosition < top + height) {
+        currentSectionId = section.getAttribute('id');
+      }
+    });
+
+    if (currentSectionId) {
+      navLinks.forEach((link) => {
+        const href = link.getAttribute('href');
+        if (href === `#${currentSectionId}`) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
   };
+
   window.addEventListener('scroll', updateNavbarOnScroll, { passive: true });
   updateNavbarOnScroll();
+
+  // Smooth scroll click handler for navbar and CTA links
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
+      const targetId = anchor.getAttribute('href');
+      if (targetId && targetId !== '#') {
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          e.preventDefault();
+          const navHeight = siteNavbar ? siteNavbar.offsetHeight : 68;
+          const targetTop = targetId === '#hero'
+            ? 0
+            : targetElement.getBoundingClientRect().top + window.scrollY - navHeight;
+
+          window.scrollTo({
+            top: targetTop,
+            behavior: 'smooth'
+          });
+
+          navLinks.forEach((link) => {
+            if (link.getAttribute('href') === targetId) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+        }
+      }
+    });
+  });
 }
 

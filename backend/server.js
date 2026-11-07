@@ -28,9 +28,30 @@ const PORT = process.env.PORT || 3000;
 // ---------------------------------------------------------------------------
 
 /**
- * CORS — allows cross-origin requests when developing frontend independently.
+ * CORS — allows cross-origin requests from deployed frontend domains
+ * (Render, Vercel, Netlify, GitHub Pages, custom domains) or local dev.
+ * Configurable via FRONTEND_URL or ALLOWED_ORIGINS in environment variables.
  */
-app.use(cors());
+const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL;
+const allowedOriginsList = allowedOriginsEnv
+  ? allowedOriginsEnv.split(',').map((o) => o.trim())
+  : null;
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow non-browser requests (e.g. health checks, server-to-server, curl)
+      if (!origin) return callback(null, true);
+      if (!allowedOriginsList || allowedOriginsList.includes('*') || allowedOriginsList.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+  })
+);
 
 // Parse JSON request bodies (not strictly needed for query-param-only routes,
 // but good practice for future POST endpoints)
